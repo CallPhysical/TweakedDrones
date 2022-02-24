@@ -39,9 +39,10 @@ Oscil<SIN2048_NUM_CELLS, CONTROL_RATE> kVol8;
 char v1,v2,v3,v4,v5,v6,v7,v8;
 int pot = 0;
 int wav = 0;
+int oldWav = 0;
 
 void setup(){
-// Serial.begin(9600);
+//Serial.begin(9600);
   // set harmonic frequencies
   aOsc1.setFreq(100);
   aOsc2.setFreq(100);
@@ -62,7 +63,7 @@ void setup(){
   kVol7.setFreq(0.0717f);
   kVol8.setFreq(0.041f);
 
-  v1=v2=v3=v4=v5=v6=v7=v8=128;
+  v1=v2=v3=v4=v5=v6=v7=v8=127;
 
   pinMode(2, INPUT_PULLUP); 
   pinMode(3, INPUT_PULLUP);   
@@ -160,40 +161,44 @@ void updateControl(){
   
   switch (pot) { // decide which pots to read
     case 1:
-    aOsc1.setFreq((mozziAnalogRead(A0))*4);
-    aOsc2.setFreq((mozziAnalogRead(A1))*4);
+    aOsc1.setFreq((mozziAnalogRead(A0))<<2);
+    aOsc2.setFreq((mozziAnalogRead(A1))<<2);
     break;
     case 2:
-    aOsc3.setFreq((mozziAnalogRead(A2))*4);
-    aOsc4.setFreq((mozziAnalogRead(A3))*4);
+    aOsc3.setFreq((mozziAnalogRead(A2))<<2);
+    aOsc4.setFreq((mozziAnalogRead(A3))<<2);
     break;
     case 3:
-    aOsc5.setFreq((mozziAnalogRead(A4))*4);
-    aOsc6.setFreq((mozziAnalogRead(A5))*4);
+    aOsc5.setFreq((mozziAnalogRead(A4))<<2);
+    aOsc6.setFreq((mozziAnalogRead(A5))<<2);
     break;
     case 4:
-    aOsc7.setFreq((mozziAnalogRead(A6))*4);
-    aOsc8.setFreq((mozziAnalogRead(A7))*4);
+    aOsc7.setFreq((mozziAnalogRead(A6))<<2);
+    aOsc8.setFreq((mozziAnalogRead(A7))<<2);
     break;
     case 5:
     // every fifth cycle also check the oscillator switches
-    wav = digitalRead(2) + (digitalRead(3) * 2);
-
-    switch (wav) {
-        case 1:
-        setTable1();
-        break;
-        case 2:
-        setTable2();
-        break;
-        case 3:
-        setTable3();
-        break;
-        default: // case 0
-        setTable4();
-        break;      
-    } // end of switch wav
- 
+    wav = digitalRead(2) + (digitalRead(3)<<1);  
+    if (wav!=oldWav) // only swap the tables if the switch position is different from before
+      {
+      switch (wav) {
+          case 1:
+          setTable1();
+          break;
+          case 2:
+          setTable2();
+          break;
+          case 3:
+          setTable3();
+          break;
+          default: // case 0
+          setTable4();
+          break;      
+          } // end of switch wav
+      oldWav = wav;
+      }
+  
+    
     pot=0;   // reset the pot cycle to 0 (It'll be incremented on the next update)
     break;
     }  // end of switch sensor
