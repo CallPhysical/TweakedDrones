@@ -6,3 +6,5 @@ Helios_Drone5_0 merges BlogHoskins Helios sketch with the Drones sketch. It need
 and Helios modes. 
 
 Helios_Drone5_0a is a 6-voice version of the same which will run on the standard Helios with any additional pots or switches. The position of the LFO switch sets the unit into either Drone or Helios mode at startup.
+
+Helios_Drones5_1 adds sustain and release to the Helios envelope using the extra pots on A6 and A7.
